@@ -11,5 +11,11 @@
     "test": "jest --watchAll --no-cache",
     "test:ci": "jest",
     "format": "prettier --write ."
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6"
   }
 }
