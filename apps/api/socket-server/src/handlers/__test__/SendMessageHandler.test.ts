@@ -3,6 +3,12 @@ import { SendMessageHandler } from '@handlers/SendMessageHandler';
 import { AuthenticationService } from '@services/AuthenticationService';
 import { Message } from '@models/message';
 
+jest.mock('@services/AuthenticationService', () => ({
+    AuthenticationService: {
+        verifyToken: jest.fn()
+    }
+}));
+
 describe('SendMessageHandler', () => {
     let handler: SendMessageHandler;
     let mockSocket: Partial<Socket>;
@@ -30,11 +36,13 @@ describe('SendMessageHandler', () => {
 
         // Assert
         expect(AuthenticationService.verifyToken).toHaveBeenCalledWith('validToken');
-        expect(Message.build).toHaveBeenCalledWith({ text: 'Hello, world!', sender: 'testUser' });
-        // expect(Message.save).toHaveBeenCalled();
-        expect(mockSocket.to).toHaveBeenCalledWith('mainRoom');
         expect(mockSocket.to).toHaveBeenCalledWith('mainRoom');
         expect(mockSocket.emit).not.toHaveBeenCalledWith('error', expect.any(Object));
+
+        const messages = await Message.find();
+        expect(messages).toHaveLength(1);
+        expect(messages[0].text).toBe('Hello, world!');
+        expect(messages[0].sender).toBe('testUser');
     });
 
     it('should emit an error on invalid token', async () => {
