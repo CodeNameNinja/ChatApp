@@ -7,7 +7,6 @@ export class LoginHandler implements IHandler {
         const { username, password } = credentials;
         const result = AuthenticationService.handleLogin(username, password);
         if (result.success) {
-            socket.join('mainRoom'); 
             socket.emit('login_success', { message: result.message, token: result.token });
         } else {
             socket.emit('login_failed', { message: result.message });

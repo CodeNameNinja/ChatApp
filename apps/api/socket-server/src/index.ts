@@ -8,25 +8,24 @@ const app = express();
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer);
 
-// Connect to MongoDB
+
 connectToDatabase();
 
 
 io.on('connection', (socket) => {
     console.log('A user connected');
+
     const defaultRoom = 'mainRoom';
+
     socket.join(defaultRoom);
 
+    new ChatHandler(io, socket);
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
         socket.leave(defaultRoom)
     });
-    new ChatHandler(io, socket);
-    // Handle chat message
-    socket.on('chat message', (msg) => {
-        io.emit('chat message', msg);
-    });
+
 });
 
 const PORT = process.env.PORT || 3000;
