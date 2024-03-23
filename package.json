@@ -8,6 +8,9 @@
   },
   "author": "Mitchell Yuen a.k.a CodeNameNinja",
   "license": "ISC",
+  "workspaces": [
+    "apps/api/socket-server"
+  ],
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.19.1",

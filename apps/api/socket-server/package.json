@@ -1,0 +1,8 @@
+{
+  "name": "socket-server",
+  "version": "1.0.0",
+  "description": "This app will host the socket server and manage the connections",
+  "main": "index.js",
+  "author": "Mitchell Yuen a.k.a CodeNameNinja",
+  "license": "MIT"
+}
