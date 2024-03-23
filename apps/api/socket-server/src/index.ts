@@ -2,10 +2,15 @@ import express from 'express';
 import {createServer} from 'http';
 import {Server as SocketIOServer} from 'socket.io';
 import ChatHandler from "@handlers/ChatHandler"
+import connectToDatabase from './config/database';
 
 const app = express();
 const httpServer = createServer(app);
 const io = new SocketIOServer(httpServer);
+
+// Connect to MongoDB
+connectToDatabase();
+
 
 io.on('connection', (socket) => {
     console.log('A user connected');
