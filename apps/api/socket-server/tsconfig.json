@@ -24,6 +24,9 @@
       ],
       "@services/*": [
         "./src/services/*"
+      ],
+      "@handlers/*": [
+        "./src/handlers/*"
       ]
     },
     "esModuleInterop": true,

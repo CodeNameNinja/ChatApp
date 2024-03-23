@@ -25,3 +25,5 @@ class ChatHandler {
         }
     };
 }
+
+export default ChatHandler

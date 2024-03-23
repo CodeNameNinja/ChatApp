@@ -1,6 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import ChatHandler from "@handlers/ChatHandler"
 
 const app = express();
 const httpServer = createServer(app);
@@ -12,7 +13,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('User disconnected');
     });
-
+    new ChatHandler(io, socket);
     // Handle chat message
     socket.on('chat message', (msg) => {
         io.emit('chat message', msg);
