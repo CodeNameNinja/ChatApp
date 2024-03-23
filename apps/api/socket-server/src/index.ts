@@ -1,6 +1,6 @@
 import express from 'express';
-import { createServer } from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import {createServer} from 'http';
+import {Server as SocketIOServer} from 'socket.io';
 import ChatHandler from "@handlers/ChatHandler"
 
 const app = express();
@@ -9,9 +9,13 @@ const io = new SocketIOServer(httpServer);
 
 io.on('connection', (socket) => {
     console.log('A user connected');
+    const defaultRoom = 'mainRoom';
+    socket.join(defaultRoom);
+
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
+        socket.leave(defaultRoom)
     });
     new ChatHandler(io, socket);
     // Handle chat message
