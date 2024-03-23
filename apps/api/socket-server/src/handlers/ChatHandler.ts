@@ -1,8 +1,9 @@
 import { Server as SocketIOServer, Socket } from 'socket.io';
+import IHandler from '@interfaces/IHandler';
 import { LoginHandler } from '@handlers/LoginHandler';
 import { SendMessageHandler } from '@handlers/SendMessageHandler';
 import { FetchMessagesHandler } from '@handlers/FetchMessagesHandler';
-import IHandler from '@interfaces/IHandler';
+import { DeleteMessageHandler } from '@handlers/DeleteMessageHandler';
 
 class ChatHandler {
     private handlerMap: { [key: string]: IHandler } = {};
@@ -11,6 +12,7 @@ class ChatHandler {
         this.handlerMap['login'] = new LoginHandler();
         this.handlerMap['send_message'] = new SendMessageHandler();
         this.handlerMap['fetch_messages'] = new FetchMessagesHandler();
+        this.handlerMap['delete_message'] = new DeleteMessageHandler();
 
         this.registerHandlers();
     }
