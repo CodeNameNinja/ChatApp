@@ -1,41 +1,25 @@
-import {Server as SocketIOServer, Socket} from 'socket.io';
-import {AuthenticationService} from '@services/AuthenticationService';
-import {Message} from '@models/message';
+import { Server as SocketIOServer, Socket } from 'socket.io';
+import { LoginHandler } from '@handlers/LoginHandler';
+import { SendMessageHandler } from '@handlers/SendMessageHandler';
+import { FetchMessagesHandler } from '@handlers/FetchMessagesHandler';
+import IHandler from '@interfaces/IHandler';
 
 class ChatHandler {
-    private defaultRoom = 'mainRoom';
+    private handlerMap: { [key: string]: IHandler } = {};
 
     constructor(private io: SocketIOServer, private socket: Socket) {
+        this.handlerMap['login'] = new LoginHandler();
+        this.handlerMap['send_message'] = new SendMessageHandler();
+        this.handlerMap['fetch_messages'] = new FetchMessagesHandler();
+
         this.registerHandlers();
     }
 
     private registerHandlers(): void {
-        this.socket.on('login', this.handleLogin);
-        this.socket.on('send_message', this.handleSendMessage);
-        this.socket.on('fetch_messages', this.handleFetchMessages);
+        Object.keys(this.handlerMap).forEach((event) => {
+            this.socket.on(event, (data) => this.handlerMap[event].handle(this.socket, data));
+        });
     }
-
-    private handleLogin = async (credentials: { username: string; password: string }): Promise<void> => {
-        const {username, password} = credentials;
-        const result = AuthenticationService.handleLogin(username, password);
-        if (result.success) {
-            this.socket.join(this.defaultRoom);
-            this.socket.emit('login_success', {message: result.message});
-        } else {
-            this.socket.emit('login_failed', {message: result.message});
-        }
-    };
-
-    private handleSendMessage = async (data: { text: string; sender: string }): Promise<void> => {
-        const message = Message.build({text: data.text, sender: data.sender});
-        await message.save();
-        this.io.to(this.defaultRoom).emit('new_message', message);
-    };
-
-    private handleFetchMessages = async (): Promise<void> => {
-        const messages = await Message.find().sort({createdAt: -1}).limit(50);
-        this.socket.emit('messages', messages);
-    };
 }
 
 export default ChatHandler;
