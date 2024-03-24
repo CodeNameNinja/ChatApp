@@ -34,3 +34,9 @@ Click on the following link to view the Postman collection for testing the API e
 [Public URL](https://www.postman.com/orange-desert-67059/workspace/chatapp/collection/65fea71e576521afcb01b7c4?action=share&creator=22791671&active-environment=22791671-5c42df62-99e5-4597-8ca3-ab5b0699d11b)
 
 > Select either production or development environment depending if you are running the app.
+
+## Testing
+`yarn test`
+
+## Linting 
+`yarn lint`
