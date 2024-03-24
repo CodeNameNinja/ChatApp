@@ -1,0 +1,22 @@
+name: "socket-server"
+deployment:
+  tag: "latest"
+  repository: "645763912818.dkr.ecr.af-south-1.amazonaws.com"
+database:
+  url: mongodb+srv://developer:7mpiEDJ74SQx43eb@chatty.t58knnm.mongodb.net
+hpa:
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 75
