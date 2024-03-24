@@ -24,6 +24,8 @@ jobs:
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
+        env:
+          AWS_REGION: af-south-1
 
       - name: Push Docker Image to ECR
         run: |
