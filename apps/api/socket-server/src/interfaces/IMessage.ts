@@ -1,6 +1,6 @@
 interface IMessage {
-    text: string,
-    sender: string,
+	text: string
+	sender: string
 }
 
-export default IMessage;
+export default IMessage

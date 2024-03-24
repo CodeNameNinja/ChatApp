@@ -1,27 +1,26 @@
-import { Server as SocketIOServer, Socket } from 'socket.io';
-import IHandler from '@interfaces/IHandler';
-import { LoginHandler } from '@handlers/LoginHandler';
-import { SendMessageHandler } from '@handlers/SendMessageHandler';
-import { FetchMessagesHandler } from '@handlers/FetchMessagesHandler';
-import { DeleteMessageHandler } from '@handlers/DeleteMessageHandler';
+// src/handlers/chatHandler.ts
+import { type Server as SocketIOServer, type Socket } from 'socket.io'
+import { LoginHandler } from '@handlers/LoginHandler'
+import { SendMessageHandler } from '@handlers/SendMessageHandler'
+import { FetchMessagesHandler } from '@handlers/FetchMessagesHandler'
+import { DeleteMessageHandler } from '@handlers/DeleteMessageHandler'
+import type IHandler from '@interfaces/IHandler'
 
-class ChatHandler {
-    private handlerMap: { [key: string]: IHandler } = {};
+type HandlerConstructor = new () => IHandler
 
-    constructor(private io: SocketIOServer, private socket: Socket) {
-        this.handlerMap['login'] = new LoginHandler();
-        this.handlerMap['send_message'] = new SendMessageHandler();
-        this.handlerMap['fetch_messages'] = new FetchMessagesHandler();
-        this.handlerMap['delete_message'] = new DeleteMessageHandler();
-
-        this.registerHandlers();
-    }
-
-    private registerHandlers(): void {
-        Object.keys(this.handlerMap).forEach((event) => {
-            this.socket.on(event, (data) => this.handlerMap[event].handle(this.socket, data));
-        });
-    }
+const handlerMap: Record<string, HandlerConstructor> = {
+	login: LoginHandler,
+	send_message: SendMessageHandler,
+	fetch_messages: FetchMessagesHandler,
+	delete_message: DeleteMessageHandler,
 }
 
-export default ChatHandler;
+export const setupHandlers = (io: SocketIOServer, socket: Socket): void => {
+	Object.keys(handlerMap).forEach((event) => {
+		const HandlerClass = handlerMap[event]
+		const handlerInstance = new HandlerClass()
+		socket.on(event, async (data) => {
+			await handlerInstance.handle(socket, data)
+		})
+	})
+}
