@@ -23,7 +23,6 @@ jobs:
           docker build -f apps/api/socket-server/Dockerfile -t socket-server:$IMAGE_TAG .
 
       - name: Login to Amazon ECR
-        id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Push Docker Image to ECR
@@ -45,11 +44,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.65 }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: af-south-1
 
+      - name: Update kubeconfig
+        run: aws eks --region af-south-1 update-kubeconfig --name chatty-app
+
       - name: Restart socket-server Deployment
-        run: |
-          kubectl rollout restart deployment socket-server-depl
-        env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+        run: kubectl rollout restart deployment socket-server-depl
