@@ -1,0 +1,44 @@
+name: test-socket-server
+
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened, ready_for_review ]
+    paths:
+      - "apps/api/socket-server/**"
+  push:
+    branches:
+      - main
+      - staging
+    paths:
+      - "apps/api/socket-server/**"
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Yarn Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            **/node_modules
+            .yarn/cache
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install Packages
+        working-directory: apps/api/socket-server
+        run: yarn install
+
+      - name: Run linter
+        working-directory: apps/api/socket-server
+        run: yarn lint
+
+      - name: Run Tests
+        working-directory: apps/api/socket-server
+        run: yarn run test:ci --coverage
+
