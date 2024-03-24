@@ -1,0 +1,9 @@
+{
+  "entryPointStrategy": "packages",
+  "out": "docs",
+  "name": "Chatty",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "entryPoints": ["apps/api/socket-server"]
+}
