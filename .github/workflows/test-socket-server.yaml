@@ -35,7 +35,6 @@ jobs:
         run: yarn install
 
       - name: Run linter
-        working-directory: apps/api/socket-server
         run: yarn lint
 
       - name: Run Tests
